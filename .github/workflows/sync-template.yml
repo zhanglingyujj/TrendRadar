@@ -12,7 +12,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      workflows: write  # 核心权限：允许修改工作流文件
 
     steps:
       - name: Checkout
