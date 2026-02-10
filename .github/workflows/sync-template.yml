@@ -23,6 +23,6 @@ jobs:
         uses: AndreasAugustin/actions-template-sync@v2
         with:
           # 模板仓库的源（格式：用户名/仓库名）
-          source_repo_path: 用户名/模板仓库名
+          source_repo_path: sansan0/TrendRadar
           # 默认同步到当前仓库的主分支
           upstream_branch: main 
