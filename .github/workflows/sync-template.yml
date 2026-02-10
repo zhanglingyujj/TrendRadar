@@ -1,28 +1,30 @@
 name: Sync Template
 
 on:
-  # 允许手动触发
   workflow_dispatch:
-  # 定时触发（例如每周一凌晨 0 点）
   schedule:
     - cron: "0 0 * * 1"
 
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
-    # 如果你的仓库是私有的，需要配置相应的权限
+    # 注意：permissions 必须与 runs-on 平级
     permissions:
       contents: write
       pull-requests: write
+      workflows: write  # 核心权限：允许修改工作流文件
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # 必须设置为 0 以获取所有历史记录，否则 merge 可能会失败
+          fetch-depth: 0
 
       - name: Actions Template Sync
         uses: AndreasAugustin/actions-template-sync@v2
         with:
-          # 模板仓库的源（格式：用户名/仓库名）
-          source_repo_path: sansan0/TrendRadar
-          # 默认同步到当前仓库的主分支
-          upstream_branch: main 
+          source_repo_path: sansan0/TrendRadar # 确认这是你的模板源
+          upstream_branch: main
+          # 使用内置的 GITHUB_TOKEN
+          github_token: ${{ secrets.GITHUB_TOKEN }}
