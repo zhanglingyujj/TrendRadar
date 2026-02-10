@@ -14,6 +14,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      workflows: write  # <--- 添加这一行，允许 Action 修改工作流文件
 
     steps:
       - name: Checkout
