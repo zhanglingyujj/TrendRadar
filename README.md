@@ -12,12 +12,15 @@
 [![GitHub Stars](https://img.shields.io/github/stars/sansan0/TrendRadar?style=flat-square&logo=github&color=yellow)](https://github.com/sansan0/TrendRadar/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/sansan0/TrendRadar?style=flat-square&logo=github&color=blue)](https://github.com/sansan0/TrendRadar/network/members)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v6.9.1-blue.svg)](https://github.com/sansan0/TrendRadar)
+[![Version](https://img.shields.io/badge/version-v6.10.0-blue.svg)](https://github.com/sansan0/TrendRadar)
 [![MCP](https://img.shields.io/badge/MCP-v4.1.0-green.svg)](https://github.com/sansan0/TrendRadar)
 [![Docker Pulls](https://img.shields.io/docker/pulls/wantcat/trendradar?style=flat-square&logo=docker&logoColor=white&label=TrendRadar%20Pulls&color=2496ED)](https://hub.docker.com/r/wantcat/trendradar)
 [![Docker Pulls](https://img.shields.io/docker/pulls/wantcat/trendradar-mcp?style=flat-square&logo=docker&logoColor=white&label=MCP%20Pulls&color=2496ED)](https://hub.docker.com/r/wantcat/trendradar-mcp)
-[![RSS](https://img.shields.io/badge/RSS-订阅源支持-orange.svg?style=flat-square&logo=rss&logoColor=white)](https://github.com/sansan0/TrendRadar)
-[![AI翻译](https://img.shields.io/badge/AI-多语言推送-purple.svg?style=flat-square)](https://github.com/sansan0/TrendRadar)
+[![RSS](https://img.shields.io/badge/RSS-订阅源支持-orange.svg?style=flat-square&logo=rss&logoColor=white)](#rss-订阅源支持v450-新增)
+[![AI翻译](https://img.shields.io/badge/AI-多语言推送-purple.svg?style=flat-square)](#ai-多语言翻译v520-新增)
+[![MCP Support](https://img.shields.io/badge/MCP-AI分析支持-FF6B6B?style=flat-square&logo=ai&logoColor=white)](#-mcp-客户端)
+[![AI分析推送](https://img.shields.io/badge/AI-分析推送-FF6B6B?style=flat-square&logo=openai&logoColor=white)](#ai-分析推送v500-新增)
+[![AI智能筛选](https://img.shields.io/badge/AI-智能筛选新闻-9B59B6?style=flat-square&logo=openai&logoColor=white)](#ai-智能筛选新闻v650-新增)
 
 [![企业微信通知](https://img.shields.io/badge/企业微信-通知-00D4AA?style=flat-square)](https://work.weixin.qq.com/)
 [![个人微信通知](https://img.shields.io/badge/个人微信-通知-00D4AA?style=flat-square)](https://weixin.qq.com/)
@@ -31,12 +34,11 @@
 [![通用Webhook](https://img.shields.io/badge/通用-Webhook-607D8B?style=flat-square&logo=webhook&logoColor=white)](#)
 
 
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-自动化-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/sansan0/TrendRadar)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-自动化-2088FF?style=flat-square&logo=github-actions&logoColor=white)](#-快速开始)
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-部署-4285F4?style=flat-square&logo=github&logoColor=white)](https://sansan0.github.io/TrendRadar)
-[![Docker](https://img.shields.io/badge/Docker-部署-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/r/wantcat/trendradar)
-[![MCP Support](https://img.shields.io/badge/MCP-AI分析支持-FF6B6B?style=flat-square&logo=ai&logoColor=white)](https://modelcontextprotocol.io/)
-[![AI分析推送](https://img.shields.io/badge/AI-分析推送-FF6B6B?style=flat-square&logo=openai&logoColor=white)](#)
-[![AI智能筛选](https://img.shields.io/badge/AI-智能筛选新闻-9B59B6?style=flat-square&logo=openai&logoColor=white)](#)
+[![Docker](https://img.shields.io/badge/Docker-部署-2496ED?style=flat-square&logo=docker&logoColor=white)](#6-docker-部署)
+[![本地部署](https://img.shields.io/badge/本地-部署-28A745?style=flat-square&logo=python&logoColor=white)](#local-deploy)
+[![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-部署-F38020?style=flat-square&logo=cloudflare&logoColor=white)](#cloudflare-deploy)
 
 </div>
 
@@ -59,7 +61,7 @@
 |   |   |   |
 |:---:|:---:|:---:|
 | [🚀 **快速开始**](#-快速开始) | [AI 智能分析](#-ai-智能分析) | [⚙️ **配置详解**](#配置详解) |
-| [Docker部署](#6-docker-部署) | [MCP客户端](#-mcp-客户端) | [📝 **更新日志**](#-更新日志) |
+| [Docker部署](#6-docker-部署) / [本地部署](#local-deploy) | [MCP客户端](#-mcp-客户端) | [📝 **更新日志**](#-更新日志) |
 | [🎯 **核心功能**](#-核心功能) | [☕ **支持项目**](#-支持项目) | [📚 **项目相关**](#-项目相关) |
 
 </div>
@@ -245,10 +247,11 @@
 - **提示**：建议查看【历史更新】，明确具体的【功能内容】
 
 
-### 2026/06/02 - v6.9.0
+### 2026/06/19 - v6.10.0
 
-- **热榜域名安全校验**：新增 `expected_domain` 配置项，校验返回数据链接的域名合法性，不匹配时自动丢弃数据并警告，有效防范链接劫持或数据篡改
-- **自定义热榜 API 地址**：支持自部署 newsnow 并配置 `api_url` 使用自己的数据源
+- **AI 翻译分批处理**：大量标题翻译时自动分批请求，避免单次请求超限导致翻译失败
+- **模块拆分重构**：拆分 context.py 和 \_\_main\_\_.py，AI 筛选流水线独立为 filter_pipeline 模块，职责更清晰、维护更方便
+- **修复飞书来源标签显示**：修复飞书卡片中来源标签和 AI 独立源点速览被 CommonMark 吞掉不显示的问题
 
 ### 2026/02/09 - mcp-v4.0.0
 
@@ -261,6 +264,11 @@
 
 <details>
 <summary>👉 点击展开：<strong>历史更新</strong></summary>
+
+### 2026/06/02 - v6.9.0
+
+- **热榜域名安全校验**：新增 `expected_domain` 配置项，校验返回数据链接的域名合法性，不匹配时自动丢弃数据并警告，有效防范链接劫持或数据篡改
+- **自定义热榜 API 地址**：支持自部署 newsnow 并配置 `api_url` 使用自己的数据源
 
 ### 2026/05/23 - v6.8.0
 
@@ -1198,6 +1206,37 @@ ai_translation:
 >
 > ⚠️ 原 GitHub Actions 自动存储功能已下线（该方案曾导致 GitHub 服务器负载过高，影响平台稳定性）。
 
+<a id="cloudflare-deploy"></a>
+
+### ☁️ 自动部署到 Cloudflare Pages（可选 · 国内访问更快）
+
+GitHub Pages 在国内访问较慢，[Cloudflare Pages](https://pages.cloudflare.com/) 的访问速度更友好。配置完成后，GitHub Actions 每次运行都会自动把最新的 `index.html` 推送到 Cloudflare Pages，无需任何手动操作。
+
+> **前置条件**：已完成 [GitHub Actions 部署](#-快速开始) 并能正常生成网页报告。
+
+**① 创建 Cloudflare Pages 项目**
+
+登录 [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Create** → **Pages** → 选择 **Upload assets（直接上传）**，填写一个项目名称（例如 `trendradar`，请记住它），随意上传一个文件完成首次创建（后续会被 Actions 自动覆盖）。
+
+**② 获取 API Token 与 Account ID**
+
+- **API Token**：右上角头像 → **My Profile** → **API Tokens** → **Create Token** → **Create Custom Token**，权限选择 `Account` → `Cloudflare Pages` → `Edit`，创建后复制 Token（仅显示一次）。
+- **Account ID**：在 **Workers & Pages** 页面右侧栏即可找到（或任意域名 **Overview** 页面右下角）。
+
+**③ 在 GitHub 仓库添加 3 个 Secrets**
+
+进入仓库 `Settings` → `Secrets and variables` → `Actions` → `New repository secret`，依次添加：
+
+| Name（名称） | Secret（值） |
+|:---|:---|
+| `CLOUDFLARE_API_TOKEN` | 上一步创建的 API Token |
+| `CLOUDFLARE_ACCOUNT_ID` | 你的 Cloudflare Account ID |
+| `CLOUDFLARE_PROJECT_NAME` | Cloudflare Pages 项目名（如 `trendradar`） |
+
+配置完成后，下一次 GitHub Actions 运行即会自动部署，访问地址为 `https://<项目名>.pages.dev`。
+
+> 💡 **说明**：三个 Secret 缺任意一个都会自动跳过 Cloudflare 部署，不会影响新闻推送等其它功能；如需绑定自定义域名，可在 Pages 项目的 **Custom domains** 中设置。
+
 ### **减少 APP 依赖**
 
 从"被算法推荐绑架"变成"主动获取自己想要的信息"
@@ -1220,17 +1259,50 @@ ai_translation:
 
 ### 请选择适合你的部署方式
 
-#### 🅰️ 方案一：Docker 部署（推荐 🔥）
+#### Ⓐ 方案一：Docker 部署（推荐 🔥）
 
 * **特点**：比 GitHub Actions 更稳定，数据本地存储（无需配置云存储）
 * **适用**：有自己的服务器、NAS 或长期运行的电脑
 * **注意**：你需要阅读了解下方的基础配置流程，然后跳转到 Docker 教程进行部署。
 
-#### 🅱️ 方案二：GitHub Actions 部署（本章节内容 ⬇️）
+#### Ⓑ 方案二：GitHub Actions 部署（本章节内容 ⬇️）
 
 * **特点**：无服务器，数据存储在 **远程云存储**（推荐配置）
 * **适用**：没有服务器的用户，利用 GitHub 免费资源
 * **注意**：需配置云存储以获得完整体验，且需定期签到续期
+
+<a id="local-deploy"></a>
+
+#### Ⓒ 方案三：本地部署（uv）
+
+* **特点**：直接在本机运行，无需 Docker，适合开发调试或无 Docker 环境的用户
+* **适用**：Windows / Mac / Linux 用户（无需预装 Python，uv 会自动管理）
+* **步骤**：
+
+   **1. 安装 uv**（如已安装可跳过，无需预装 Python）
+
+   ```bash
+   # macOS / Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+   # Windows (PowerShell)
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+
+   **2. 克隆并运行**
+
+   ```bash
+   git clone https://github.com/sansan0/TrendRadar.git
+   cd TrendRadar
+   uv sync          # 自动安装 Python 和项目依赖
+   uv run python -m trendradar
+   ```
+
+   > 💡 **提示**：
+   > - uv 会自动管理 Python 版本，无需手动安装 Python
+   > - Windows 用户也可以双击 `setup-windows.bat` 一键安装依赖
+   > - Mac 用户可使用 `bash setup-mac.sh`
+   > - 运行前请先编辑 `config/config.yaml` 填写推送渠道等配置，参考下方的基础配置流程
 
 ### 1️⃣ 第一步：获取项目代码
 
