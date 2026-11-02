@@ -8,10 +8,27 @@ AI 分析器模块
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, NamedTuple, Optional
 
 from trendradar.ai.client import AIClient
 from trendradar.ai.prompt_loader import load_prompt_template
+
+
+def _coerce_analysis_text(value: Any) -> str:
+    """将模型返回的分析字段归一化为文本，供报告和推送渲染。"""
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        parts = []
+        for item in value:
+            if isinstance(item, str):
+                parts.append(item)
+            else:
+                parts.append(json.dumps(item, ensure_ascii=False))
+        return "\n".join(parts)
+    if isinstance(value, str):
+        return value
+    return json.dumps(value, ensure_ascii=False)
 
 
 @dataclass
@@ -43,6 +60,16 @@ class AIAnalysisResult:
     ai_mode: str = ""                    # AI 分析使用的模式 (daily/current/incremental)
     include_rss: bool = True             # 是否启用 RSS 分析
     include_standalone: bool = False     # 是否启用独立展示区分析
+
+
+class PreparedNewsContent(NamedTuple):
+    news_content: str
+    rss_content: str
+    hotlist_total: int
+    rss_total: int
+    analyzed_count: int
+    hotlist_analyzed: int
+    rss_analyzed: int
 
 
 class AIAnalyzer:
@@ -139,17 +166,17 @@ class AIAnalyzer:
             )
 
         # 准备新闻内容并获取统计数据
-        news_content, rss_content, hotlist_total, rss_total, analyzed_count, hotlist_analyzed, rss_analyzed = self._prepare_news_content(stats, rss_stats)
-        total_news = hotlist_total + rss_total
+        prepared = self._prepare_news_content(stats, rss_stats)
+        total_news = prepared.hotlist_total + prepared.rss_total
 
-        if not news_content and not rss_content:
+        if not prepared.news_content and not prepared.rss_content:
             return AIAnalysisResult(
                 success=False,
                 skipped=True,
                 error="本轮无新增热点内容，跳过 AI 分析",
                 total_news=total_news,
-                hotlist_count=hotlist_total,
-                rss_count=rss_total,
+                hotlist_count=prepared.hotlist_total,
+                rss_count=prepared.rss_total,
                 analyzed_news=0,
                 max_news_limit=self.max_news
             )
@@ -166,12 +193,12 @@ class AIAnalyzer:
         user_prompt = user_prompt.replace("{report_mode}", report_mode)
         user_prompt = user_prompt.replace("{report_type}", report_type)
         user_prompt = user_prompt.replace("{current_time}", current_time)
-        user_prompt = user_prompt.replace("{news_count}", str(hotlist_total))
-        user_prompt = user_prompt.replace("{rss_count}", str(rss_total))
+        user_prompt = user_prompt.replace("{news_count}", str(prepared.hotlist_total))
+        user_prompt = user_prompt.replace("{rss_count}", str(prepared.rss_total))
         user_prompt = user_prompt.replace("{platforms}", ", ".join(platforms) if platforms else "多平台")
         user_prompt = user_prompt.replace("{keywords}", ", ".join(keywords[:20]) if keywords else "无")
-        user_prompt = user_prompt.replace("{news_content}", news_content)
-        user_prompt = user_prompt.replace("{rss_content}", rss_content)
+        user_prompt = user_prompt.replace("{news_content}", prepared.news_content)
+        user_prompt = user_prompt.replace("{rss_content}", prepared.rss_content)
         user_prompt = user_prompt.replace("{language}", self.language)
 
         # 构建独立展示区内容
@@ -218,11 +245,11 @@ class AIAnalyzer:
 
             # 填充统计数据
             result.total_news = total_news
-            result.hotlist_count = hotlist_total
-            result.rss_count = rss_total
-            result.analyzed_news = analyzed_count
-            result.hotlist_analyzed = hotlist_analyzed
-            result.rss_analyzed = rss_analyzed
+            result.hotlist_count = prepared.hotlist_total
+            result.rss_count = prepared.rss_total
+            result.analyzed_news = prepared.analyzed_count
+            result.hotlist_analyzed = prepared.hotlist_analyzed
+            result.rss_analyzed = prepared.rss_analyzed
             result.standalone_analyzed = standalone_count
             result.max_news_limit = self.max_news
             result.include_rss = self.include_rss
@@ -246,16 +273,7 @@ class AIAnalyzer:
         self,
         stats: List[Dict],
         rss_stats: Optional[List[Dict]] = None,
-    ) -> tuple:
-        """
-        准备新闻内容文本（增强版）
-
-        热榜新闻包含：来源、标题、排名范围、时间范围、出现次数
-        RSS 包含：来源、标题、发布时间
-
-        Returns:
-            tuple: (news_content, rss_content, hotlist_total, rss_total, analyzed_count, hotlist_analyzed, rss_analyzed)
-        """
+    ) -> PreparedNewsContent:
         news_lines = []
         rss_lines = []
         news_count = 0
@@ -359,7 +377,15 @@ class AIAnalyzer:
         rss_content = "\n".join(rss_lines) if rss_lines else ""
         total_count = news_count + rss_count
 
-        return news_content, rss_content, hotlist_total, rss_total, total_count, news_count, rss_count
+        return PreparedNewsContent(
+            news_content=news_content,
+            rss_content=rss_content,
+            hotlist_total=hotlist_total,
+            rss_total=rss_total,
+            analyzed_count=total_count,
+            hotlist_analyzed=news_count,
+            rss_analyzed=rss_count,
+        )
 
     def _call_ai(self, user_prompt: str) -> str:
         """调用 AI API（使用 LiteLLM）"""
@@ -613,11 +639,11 @@ class AIAnalyzer:
 
         # 解析成功，提取字段
         try:
-            result.core_trends = data.get("core_trends", "")
-            result.sentiment_controversy = data.get("sentiment_controversy", "")
-            result.signals = data.get("signals", "")
-            result.rss_insights = data.get("rss_insights", "")
-            result.outlook_strategy = data.get("outlook_strategy", "")
+            result.core_trends = _coerce_analysis_text(data.get("core_trends", ""))
+            result.sentiment_controversy = _coerce_analysis_text(data.get("sentiment_controversy", ""))
+            result.signals = _coerce_analysis_text(data.get("signals", ""))
+            result.rss_insights = _coerce_analysis_text(data.get("rss_insights", ""))
+            result.outlook_strategy = _coerce_analysis_text(data.get("outlook_strategy", ""))
 
             # 解析独立展示区概括
             summaries = data.get("standalone_summaries", {})
